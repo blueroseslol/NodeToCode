@@ -4,6 +4,7 @@
 
 #include "Algo/AllOf.h"
 #include "Core/N2CCaptureContext.h"
+#include "Core/N2CAnimationCapture.h"
 #include "Core/N2CNodeCollector.h"
 #include "EdGraph/EdGraph.h"
 #include "K2Node.h"
@@ -54,6 +55,11 @@ namespace N2C
 
 	TValueOrError<FN2CCapture, FString> CaptureGraph(const UEdGraph& Graph, const FN2CCaptureOptions& Options)
 	{
+        if (N2CAnimationCapture::IsAnimationGraph(&Graph))
+        {
+            UEdGraph* GraphPtr = const_cast<UEdGraph*>(&Graph);
+            return CaptureGraphs(MakeArrayView(&GraphPtr, 1), Options);
+        }
 		// The collector only reads the graph; its signature predates const-correct callers
 		TArray<UK2Node*> Nodes;
 		if (!FN2CNodeCollector::Get().CollectNodesFromGraph(const_cast<UEdGraph*>(&Graph), Nodes))

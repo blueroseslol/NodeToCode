@@ -78,6 +78,7 @@
 * [NodeToCodeTools in Unreal MCP (UE 5.8)](NodeToCodeTools)
 * [NodeToCode and Epic Tool Mapping (UE 5.8)](NodeToCode-and-Epic-Tool-Mapping)
 * [Agent Skills](Agent-Skills)
+* [Reading Animation Blueprints](Reading-Animation-Blueprints)
 * [Claude Code Plugin](Claude-Code-Plugin)
 </details>
 

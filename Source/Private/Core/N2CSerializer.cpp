@@ -16,12 +16,12 @@ namespace
         TEXT("enums"), N2CJsonContract::VariablesField, TEXT("guids"), N2CJsonContract::WarningsField };
     const TCHAR* const MetadataFields[] = { TEXT("name"), TEXT("blueprint_type"), TEXT("blueprint_class") };
     const TCHAR* const GraphFields[] = { TEXT("name"), TEXT("graph_type"), TEXT("owner_blueprint"), TEXT("nodes"),
-        N2CJsonContract::FlowsField, N2CJsonContract::CommentsField, N2CJsonContract::LocalVariablesField };
+        N2CJsonContract::FlowsField, N2CJsonContract::CommentsField, N2CJsonContract::LocalVariablesField, TEXT("analysis_only"), TEXT("source_path"), TEXT("schema_class") };
     const TCHAR* const NodeFields[] = { N2CJsonContract::IdField, N2CJsonContract::AgentIdsField, TEXT("type"), N2CJsonContract::NodeClassField, N2CJsonContract::NodeTitleField,
         N2CJsonContract::NodeNameFieldV1, TEXT("member_parent"), TEXT("member_name"), TEXT("comment"), TEXT("pure"), TEXT("latent"),
         N2CJsonContract::UnusedField, N2CJsonContract::UnreachableField, N2CJsonContract::DisabledField, TEXT("input_pins"),
         TEXT("output_pins"), N2CJsonContract::NodeBoundToField, N2CJsonContract::NodeNetField, N2CJsonContract::NodeReliableField,
-        N2CJsonContract::NodeTimelineField };
+        N2CJsonContract::NodeTimelineField, TEXT("property_access_path"), TEXT("editor_properties") };
     const TCHAR* const PinFields[] = { N2CJsonContract::IdField, N2CJsonContract::AgentIdsField, N2CJsonContract::PinNameField, N2CJsonContract::PinLabelField, TEXT("type"),
         TEXT("sub_type"), TEXT("default_value"), TEXT("connected"), TEXT("is_reference"), TEXT("is_const"), TEXT("is_array"),
         TEXT("is_map"), TEXT("is_set"), N2CJsonContract::PinValueTypeField, N2CJsonContract::PinValueSubTypeField };
@@ -502,6 +502,9 @@ TSharedPtr<FJsonObject> FN2CSerializer::GraphToJsonObject(const FN2CGraph& Graph
         JsonObject->SetStringField(TEXT("owner_blueprint"), Graph.OwnerBlueprint);
     }
 
+    if (Graph.bAnalysisOnly) JsonObject->SetBoolField(TEXT("analysis_only"), true);
+    if (!Graph.SourcePath.IsEmpty()) JsonObject->SetStringField(TEXT("source_path"), Graph.SourcePath);
+    if (!Graph.SchemaClass.IsEmpty()) JsonObject->SetStringField(TEXT("schema_class"), Graph.SchemaClass);
     // Add nodes array
     TArray<TSharedPtr<FJsonValue>> NodesArray;
     for (const FN2CNodeDefinition& Node : Graph.Nodes)
@@ -659,6 +662,18 @@ TSharedPtr<FJsonObject> FN2CSerializer::NodeToJsonObject(const FN2CNodeDefinitio
         }
         Timeline->SetArrayField(N2CJsonContract::TimelineTracksField, Tracks);
         JsonObject->SetObjectField(N2CJsonContract::NodeTimelineField, Timeline);
+    }
+    if (!Node.PropertyAccessPath.IsEmpty())
+    {
+        TArray<TSharedPtr<FJsonValue>> Segments;
+        for (const FString& Segment : Node.PropertyAccessPath) Segments.Add(MakeShared<FJsonValueString>(Segment));
+        JsonObject->SetArrayField(TEXT("property_access_path"), Segments);
+    }
+    if (!Node.EditorProperties.IsEmpty())
+    {
+        TSharedRef<FJsonObject> Properties = MakeShared<FJsonObject>();
+        for (const auto& Entry : Node.EditorProperties) Properties->SetStringField(Entry.Key, Entry.Value);
+        JsonObject->SetObjectField(TEXT("editor_properties"), Properties);
     }
     WriteUnknownFields(JsonObject, Node.UnknownFields);
 
@@ -1148,6 +1163,9 @@ bool FN2CSerializer::ParseGraphFromJson(const TSharedPtr<FJsonObject>& JsonObjec
     // Optional (card 0242)
     ReadVariables(JsonObject, N2CJsonContract::LocalVariablesField, OutGraph.LocalVariables, Path, Warnings);
 
+    JsonObject->TryGetBoolField(TEXT("analysis_only"), OutGraph.bAnalysisOnly);
+    JsonObject->TryGetStringField(TEXT("source_path"), OutGraph.SourcePath);
+    JsonObject->TryGetStringField(TEXT("schema_class"), OutGraph.SchemaClass);
     KeepUnknownFields(JsonObject, GraphFields, OutGraph.UnknownFields, Path, Warnings);
     return true;
 }
@@ -1275,6 +1293,20 @@ bool FN2CSerializer::ParseNodeFromJson(const TSharedPtr<FJsonObject>& JsonObject
         }
     }
 
+    const TArray<TSharedPtr<FJsonValue>>* Segments = nullptr;
+    if (JsonObject->TryGetArrayField(TEXT("property_access_path"), Segments))
+        for (const auto& Segment : *Segments)
+        {
+            FString Value;
+            if (Segment->TryGetString(Value)) OutNode.PropertyAccessPath.Add(Value);
+        }
+    const TSharedPtr<FJsonObject>* Properties = nullptr;
+    if (JsonObject->TryGetObjectField(TEXT("editor_properties"), Properties))
+        for (const auto& Entry : (*Properties)->Values)
+        {
+            FString Value;
+            if (Entry.Value->TryGetString(Value)) OutNode.EditorProperties.Add(FString(*Entry.Key), Value);
+        }
     KeepUnknownFields(JsonObject, NodeFields, OutNode.UnknownFields, Path, Warnings);
     return true;
 }

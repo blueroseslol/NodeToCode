@@ -1,5 +1,15 @@
 # MCP transport probes
 
+## Local Lyra animation regression
+
+`lyra_animation_readback.mjs` is a read-only integration probe for the Lyra comparison, separate from the CI transport probes. It requires a running UE 5.8 Lyra editor with NodeToCode on port 27000, Node.js, AITA's `native-client.mjs`, and the earlier comparison's baseline directory (`summary.json`, `dev2-final.json`, and `n2c/**/*.baseline.json`). The Lyra assets and baseline are not bundled with this repository.
+
+```text
+node Tests/mcp_probe/lyra_animation_readback.mjs <AITA/Tools/native-client.mjs> <baseline-directory> <output-directory>
+```
+
+It compares effective node and graph counts, every state edge's endpoints, ordered Property Access paths, animation Node settings and ordinary K2 output. Only load-time reconstructed pin GUIDs are ignored in the ordinary K2 comparison; node/graph GUIDs, short IDs, pin names/types and links remain checked. The probe writes evidence files, never assets, and does not start or stop the editor.
+
 Live checks of NodeToCode's MCP server against a headless editor on a host project. They confirm or correct the
 review's static findings, then stay as regression tests. Nothing here ships with the plugin.
 

@@ -8,6 +8,7 @@
 #include "Dom/JsonObject.h"
 #include "Dom/JsonValue.h"
 #include "EdGraph/EdGraph.h"
+#include "Core/N2CAnimationCapture.h"
 #include "Engine/Blueprint.h"
 #include "HAL/FileManager.h"
 #include "K2Node.h"
@@ -154,7 +155,7 @@ FN2CCaptureOptions N2CMcpBlueprintExport::CaptureOptions(int32 Depth)
 TValueOrError<FN2CCapture, FString> N2CMcpBlueprintExport::CaptureGraph(UEdGraph& Graph, int32 Depth)
 {
 	using namespace N2CMcpBlueprintExportPrivate;
-	if (CountK2Nodes(Graph) == 0)
+	if (CountK2Nodes(Graph) == 0 && !N2CAnimationCapture::IsStateMachineGraph(&Graph))
 	{
 		return MakeError(FString::Printf(TEXT("EMPTY_GRAPH: graph %s has no nodes"), *Graph.GetName()));
 	}

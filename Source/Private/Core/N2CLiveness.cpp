@@ -52,6 +52,17 @@ namespace N2CLiveness
 
 	void MarkGraph(FN2CGraph& Graph)
 	{
+        if (Graph.bAnalysisOnly)
+        {
+            // Pose caches, animation callbacks and state-machine links are not K2 exec/data reachability.
+            // Do not label them dead merely because there is no FunctionResult or exec entry.
+            for (FN2CNodeDefinition& Node : Graph.Nodes)
+            {
+                Node.bUnused = false;
+                Node.bUnreachable = false;
+            }
+            return;
+        }
 		TMap<FString, int32> IndexOf;
 		TArray<FExecPins> ExecPins;
 		for (int32 Index = 0; Index < Graph.Nodes.Num(); ++Index)

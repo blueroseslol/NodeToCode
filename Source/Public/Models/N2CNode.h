@@ -313,6 +313,14 @@ struct FN2CNodeDefinition
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code")
     FString UnknownType;
 
+    /** Ordered property/function segments of a Property Access node, read without evaluating them. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code")
+    TArray<FString> PropertyAccessPath;
+
+    /** Selected animation editor properties in Unreal export-text format; references use full object paths. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code")
+    TMap<FString, FString> EditorProperties;
+
     /**
      * Fields of the node's JSON object this build does not know, by name, each value as condensed JSON text, in the
      * order read. ToJson writes them back after the known fields (card 0445).

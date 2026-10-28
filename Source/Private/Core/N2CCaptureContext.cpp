@@ -3,6 +3,7 @@
 #include "Core/N2CCaptureContext.h"
 
 #include "Core/N2CLiveness.h"
+#include "Core/N2CAnimationCapture.h"
 #include "Core/N2CSettings.h"
 #include "Models/N2CJsonContract.h"
 #include "Utils/N2CStableNames.h"
@@ -99,6 +100,12 @@ void FN2CCaptureContext::BeginGraph(const FString& Name, EN2CGraphType GraphType
 
     if (Source)
     {
+        Graph.bAnalysisOnly = N2CAnimationCapture::IsAnimationGraph(Source);
+        if (Graph.bAnalysisOnly)
+        {
+            Graph.SourcePath = Source->GetPathName();
+            Graph.SchemaClass = Source->GetSchema()->GetClass()->GetPathName();
+        }
         // Visited from now on, so a graph that calls itself (directly or through others) is not queued again
         VisitedGraphs.Add(Source);
 
@@ -111,10 +118,10 @@ void FN2CCaptureContext::BeginGraph(const FString& Name, EN2CGraphType GraphType
     }
 }
 
-bool FN2CCaptureContext::AssignIDs(UK2Node* Node)
+bool FN2CCaptureContext::AssignIDs(UEdGraphNode* Node)
 {
     // Knot nodes are pass-through connections: flows are traced through them and they get no ID
-    if (!Node || Node->IsA<UK2Node_Knot>())
+    if (!N2CAnimationCapture::CanCapture(Node) || Node->IsA<UK2Node_Knot>())
     {
         return false;
     }
@@ -130,7 +137,7 @@ bool FN2CCaptureContext::AssignIDs(UK2Node* Node)
     for (const UEdGraphPin* Pin : Node->Pins)
     {
         // Hidden pins are not captured and get no ID
-        if (!Pin || Pin->bHidden || PinIDs.Contains(Pin))
+        if (!Pin || (Pin->bHidden && !N2CAnimationCapture::IsStateMachineGraph(Node->GetGraph())) || PinIDs.Contains(Pin))
         {
             continue;
         }
@@ -283,11 +290,11 @@ bool FN2CCaptureContext::CaptureNodes(TConstArrayView<UK2Node*> InCollectedNodes
     return N2CBlueprint.Graphs.Num() > 0;
 }
 
-void FN2CCaptureContext::CaptureBlueprintMetadata(UK2Node* FirstNode)
+void FN2CCaptureContext::CaptureBlueprintMetadata(UEdGraphNode* FirstNode)
 {
     if (FirstNode)
     {
-        if (UBlueprint* Blueprint = FirstNode->GetBlueprint())
+        if (UBlueprint* Blueprint = FBlueprintEditorUtils::FindBlueprintForGraph(FirstNode->GetGraph()))
         {
             CapturedBlueprint = Blueprint;
 
@@ -295,7 +302,7 @@ void FN2CCaptureContext::CaptureBlueprintMetadata(UK2Node* FirstNode)
             N2CBlueprint.Metadata.Name = Blueprint->GetName();
 
             // Set Blueprint class
-            if (UClass* BPClass = FirstNode->GetBlueprintClassFromNode())
+            if (UClass* BPClass = Blueprint->GeneratedClass ? Blueprint->GeneratedClass : Blueprint->SkeletonGeneratedClass)
             {
                 N2CBlueprint.Metadata.BlueprintClass = N2CStableNames::ClassName(BPClass);
             }
@@ -364,7 +371,7 @@ void FN2CCaptureContext::ProcessQueuedGraphs()
 bool FN2CCaptureContext::CaptureGraphs(TConstArrayView<UEdGraph*> Graphs)
 {
     // Metadata from the first node any of the graphs holds, as CaptureNodes takes it from its first node
-    UK2Node* FirstNode = nullptr;
+    UEdGraphNode* FirstNode = nullptr;
     for (const UEdGraph* Graph : Graphs)
     {
         if (!Graph)
@@ -373,7 +380,7 @@ bool FN2CCaptureContext::CaptureGraphs(TConstArrayView<UEdGraph*> Graphs)
         }
         for (UEdGraphNode* Node : Graph->Nodes)
         {
-            FirstNode = Cast<UK2Node>(Node);
+            FirstNode = N2CAnimationCapture::CanCapture(Node) ? Node : nullptr;
             if (FirstNode)
             {
                 break;
@@ -423,7 +430,7 @@ bool FN2CCaptureContext::CaptureGraphs(TConstArrayView<UEdGraph*> Graphs)
     return N2CBlueprint.Graphs.Num() > 0;
 }
 
-bool FN2CCaptureContext::ProcessNode(UK2Node* Node, FN2CNodeDefinition& OutNodeDef)
+bool FN2CCaptureContext::ProcessNode(UEdGraphNode* Node, FN2CNodeDefinition& OutNodeDef)
 {
     // Knots are skipped (they have no ID); every other node got its ID in the first pass over its graph
     const FString* NodeID = Node ? NodeIDs.Find(Node) : nullptr;
@@ -433,7 +440,18 @@ bool FN2CCaptureContext::ProcessNode(UK2Node* Node, FN2CNodeDefinition& OutNodeD
     }
     OutNodeDef.ID = *NodeID;
 
-    ProcessNodeTypeAndProperties(Node, OutNodeDef);
+    if (UK2Node* K2Node = Cast<UK2Node>(Node))
+    {
+        ProcessNodeTypeAndProperties(K2Node, OutNodeDef);
+    }
+    else
+    {
+        OutNodeDef.NodeType = EN2CNodeType::Unknown;
+        OutNodeDef.NodeClass = Node->GetClass()->GetName();
+        OutNodeDef.Title = N2CStableNames::SourceText(Node->GetNodeTitle(ENodeTitleType::FullTitle));
+        OutNodeDef.Comment = Node->NodeComment;
+    }
+    N2CAnimationCapture::ReadNode(*Node, OutNodeDef);
     OutNodeDef.bDisabled = IsDisabledNode(Node);
 
     // Track pin connections for flows
@@ -712,16 +730,15 @@ bool FN2CCaptureContext::ProcessGraph(UEdGraph* Graph, EN2CGraphType GraphType)
     {
         if (Options.bIncludeGhostNodes || !IsGhostNode(Node))
         {
-            AssignIDs(Cast<UK2Node>(Node));
+            AssignIDs(Node);
         }
     }
     for (UEdGraphNode* Node : Graph->Nodes)
     {
-        UK2Node* K2Node = Cast<UK2Node>(Node);
-        if (K2Node && (Options.bIncludeGhostNodes || !IsGhostNode(K2Node)))
+        if (N2CAnimationCapture::CanCapture(Node) && (Options.bIncludeGhostNodes || !IsGhostNode(Node)))
         {
             FN2CNodeDefinition NodeDef;
-            if (ProcessNode(K2Node, NodeDef))
+            if (ProcessNode(Node, NodeDef))
             {
                 CurrentGraph().Nodes.Add(NodeDef);
             }
@@ -754,6 +771,7 @@ bool FN2CCaptureContext::ProcessGraph(UEdGraph* Graph, EN2CGraphType GraphType)
 
 EN2CGraphType FN2CCaptureContext::DetermineGraphType(const UEdGraph* Graph)
 {
+    if (N2CAnimationCapture::IsAnimationGraph(Graph)) return EN2CGraphType::Animation;
     if (!Graph)
     {
         return EN2CGraphType::EventGraph;
@@ -989,15 +1007,15 @@ void FN2CCaptureContext::ProcessNodeTypeAndProperties(UK2Node* Node, FN2CNodeDef
     }
 }
 
-void FN2CCaptureContext::ProcessNodePins(UK2Node* Node, FN2CNodeDefinition& OutNodeDef, TArray<UEdGraphPin*>& OutExecInputs, TArray<UEdGraphPin*>& OutExecOutputs)
+void FN2CCaptureContext::ProcessNodePins(UEdGraphNode* Node, FN2CNodeDefinition& OutNodeDef, TArray<UEdGraphPin*>& OutExecInputs, TArray<UEdGraphPin*>& OutExecOutputs)
 {
     // Process input pins
     for (UEdGraphPin* Pin : Node->Pins)
     {
         if (!Pin) continue;
 
-        // Skip hidden pins entirely
-        if (Pin->bHidden)
+        // State-transition pins are deliberately hidden by the editor but carry the actual state topology.
+        if (Pin->bHidden && !N2CAnimationCapture::IsStateMachineGraph(Node->GetGraph()))
         {
             continue;
         }
@@ -1020,7 +1038,8 @@ void FN2CCaptureContext::ProcessNodePins(UK2Node* Node, FN2CNodeDefinition& OutN
         PinDef.Label = N2CStableNames::PinLabel(Pin);
         
         // Determine pin type
-        PinDef.Type = DeterminePinType(Pin);
+        const bool bStateLink = N2CAnimationCapture::IsStateMachineGraph(Node->GetGraph());
+        PinDef.Type = bStateLink ? EN2CPinType::Wildcard : DeterminePinType(Pin);
         
         // Set pin metadata
         PinDef.bConnected = Pin->LinkedTo.Num() > 0;
@@ -1066,6 +1085,10 @@ void FN2CCaptureContext::ProcessNodePins(UK2Node* Node, FN2CNodeDefinition& OutN
             PinDef.SubType = N2CStableNames::PinSubType(Pin->PinType.PinSubCategory, Pin->PinType.PinSubCategoryObject.Get());
         }
 
+        // State-machine wiring is topology, even the Entry node's historically "exec" output.
+        // Preserve the raw category in the subtype, and never validate it as K2 imperative execution.
+        if (bStateLink) PinDef.SubType = TEXT("StateLink:") + Pin->PinType.PinCategory.ToString();
+
         // A map pin's own type is its key; its value type is PinValueType (card 0238, translation-core-13)
         if (PinDef.bIsMap)
         {
@@ -1080,7 +1103,7 @@ void FN2CCaptureContext::ProcessNodePins(UK2Node* Node, FN2CNodeDefinition& OutN
         {
             OutNodeDef.InputPins.Add(PinDef);
             
-            if (Pin->PinType.PinCategory == TEXT("exec"))
+            if (PinDef.Type == EN2CPinType::Exec)
             {
                 OutExecInputs.Add(Pin);
                 N2C_LOG(Debug, TEXT("Found exec input pin: %s on node %s"),
@@ -1093,7 +1116,7 @@ void FN2CCaptureContext::ProcessNodePins(UK2Node* Node, FN2CNodeDefinition& OutN
             OutNodeDef.OutputPins.Add(PinDef);
             
             // Track execution outputs
-            if (Pin->PinType.PinCategory == TEXT("exec"))
+            if (PinDef.Type == EN2CPinType::Exec)
             {
                 OutExecOutputs.Add(Pin);
                 N2C_LOG(Debug, TEXT("Found exec output pin: %s on node %s"),
@@ -1104,7 +1127,7 @@ void FN2CCaptureContext::ProcessNodePins(UK2Node* Node, FN2CNodeDefinition& OutN
     }
 }
 
-void FN2CCaptureContext::ProcessNodeFlows(UK2Node* Node, const TArray<UEdGraphPin*>& ExecInputs, const TArray<UEdGraphPin*>& ExecOutputs)
+void FN2CCaptureContext::ProcessNodeFlows(UEdGraphNode* Node, const TArray<UEdGraphPin*>& ExecInputs, const TArray<UEdGraphPin*>& ExecOutputs)
 {
     // Record execution flows: one entry per link, from the exec output pin to the exec input pin it runs
     // ("N3.P5->N4.P1"), through knots and every branch of their fan-out, so Branch True/False, Switch cases, Sequence
@@ -1153,7 +1176,8 @@ void FN2CCaptureContext::ProcessNodeFlows(UK2Node* Node, const TArray<UEdGraphPi
     // fan-out), so an output feeding several inputs keeps all of them (translation-core-1, PR #7)
     for (UEdGraphPin* Pin : Node->Pins)
     {
-        if (!Pin || Pin->Direction != EGPD_Output || Pin->PinType.PinCategory == UEdGraphSchema_K2::PC_Exec)
+        if (!Pin || Pin->Direction != EGPD_Output ||
+            (Pin->PinType.PinCategory == UEdGraphSchema_K2::PC_Exec && !N2CAnimationCapture::IsStateMachineGraph(Node->GetGraph())))
         {
             continue;
         }

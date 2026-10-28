@@ -1,0 +1,477 @@
+[
+  {
+    "asset": "/Game/Characters/Heroes/B_Hero_Default",
+    "samples": [
+      {
+        "native": {
+          "ms": 217.3583,
+          "serverMs": 132.0115000125952,
+          "bytes": 95513,
+          "graphs": 6,
+          "nodes": 66
+        },
+        "n2c": {
+          "ms": 99.2039,
+          "bytes": 69809,
+          "graphs": 6,
+          "nodes": 61
+        }
+      },
+      {
+        "n2c": {
+          "ms": 12.134999999999991,
+          "bytes": 69809,
+          "graphs": 6,
+          "nodes": 61
+        },
+        "native": {
+          "ms": 511.72040000000004,
+          "serverMs": 433.7651999958325,
+          "bytes": 95513,
+          "graphs": 6,
+          "nodes": 66
+        }
+      },
+      {
+        "native": {
+          "ms": 436.0479,
+          "serverMs": 366.103899985319,
+          "bytes": 95512,
+          "graphs": 6,
+          "nodes": 66
+        },
+        "n2c": {
+          "ms": 24.74429999999984,
+          "bytes": 69809,
+          "graphs": 6,
+          "nodes": 61
+        }
+      },
+      {
+        "n2c": {
+          "ms": 10.885700000000043,
+          "bytes": 69809,
+          "graphs": 6,
+          "nodes": 61
+        },
+        "native": {
+          "ms": 372.1425999999999,
+          "serverMs": 341.6678000066895,
+          "bytes": 95513,
+          "graphs": 6,
+          "nodes": 66
+        }
+      },
+      {
+        "native": {
+          "ms": 437.96450000000004,
+          "serverMs": 415.68020000704564,
+          "bytes": 95514,
+          "graphs": 6,
+          "nodes": 66
+        },
+        "n2c": {
+          "ms": 36.49839999999995,
+          "bytes": 69809,
+          "graphs": 6,
+          "nodes": 61
+        }
+      },
+      {
+        "n2c": {
+          "ms": 10.08259999999973,
+          "bytes": 69809,
+          "graphs": 6,
+          "nodes": 61
+        },
+        "native": {
+          "ms": 512.5213000000003,
+          "serverMs": 436.28580000950024,
+          "bytes": 95514,
+          "graphs": 6,
+          "nodes": 66
+        }
+      }
+    ]
+  },
+  {
+    "asset": "/ShooterCore/Game/B_Hero_ShooterMannequin",
+    "samples": [
+      {
+        "native": {
+          "ms": 600.5759000000003,
+          "serverMs": 573.2987999799661,
+          "bytes": 248792,
+          "graphs": 10,
+          "nodes": 171
+        },
+        "n2c": {
+          "ms": 42.97240000000011,
+          "bytes": 163619,
+          "graphs": 10,
+          "nodes": 155
+        }
+      },
+      {
+        "n2c": {
+          "ms": 21.37480000000005,
+          "bytes": 163619,
+          "graphs": 10,
+          "nodes": 155
+        },
+        "native": {
+          "ms": 603.8654999999999,
+          "serverMs": 552.6481000124477,
+          "bytes": 248792,
+          "graphs": 10,
+          "nodes": 171
+        }
+      },
+      {
+        "native": {
+          "ms": 495.13509999999997,
+          "serverMs": 411.41060000518337,
+          "bytes": 248793,
+          "graphs": 10,
+          "nodes": 171
+        },
+        "n2c": {
+          "ms": 33.63619999999992,
+          "bytes": 163619,
+          "graphs": 10,
+          "nodes": 155
+        }
+      },
+      {
+        "n2c": {
+          "ms": 22.1221000000005,
+          "bytes": 163619,
+          "graphs": 10,
+          "nodes": 155
+        },
+        "native": {
+          "ms": 711.9787999999999,
+          "serverMs": 660.0067999970634,
+          "bytes": 248792,
+          "graphs": 10,
+          "nodes": 171
+        }
+      },
+      {
+        "native": {
+          "ms": 571.0138999999999,
+          "serverMs": 485.05950000253506,
+          "bytes": 248793,
+          "graphs": 10,
+          "nodes": 171
+        },
+        "n2c": {
+          "ms": 30.617599999999584,
+          "bytes": 163619,
+          "graphs": 10,
+          "nodes": 155
+        }
+      },
+      {
+        "n2c": {
+          "ms": 18.356400000000576,
+          "bytes": 163619,
+          "graphs": 10,
+          "nodes": 155
+        },
+        "native": {
+          "ms": 598.1938,
+          "serverMs": 564.4120000069961,
+          "bytes": 248792,
+          "graphs": 10,
+          "nodes": 171
+        }
+      }
+    ]
+  },
+  {
+    "asset": "/Game/Characters/Heroes/Mannequin/Animations/ABP_Mannequin_Base",
+    "samples": [
+      {
+        "native": {
+          "ms": 4293.3239,
+          "serverMs": 4195.713400025852,
+          "bytes": 716184,
+          "graphs": 80,
+          "nodes": 545
+        },
+        "n2c": {
+          "ms": 76.78639999999905,
+          "bytes": 721275,
+          "graphs": 79,
+          "nodes": 574
+        }
+      },
+      {
+        "n2c": {
+          "ms": 145.3058000000001,
+          "bytes": 721275,
+          "graphs": 79,
+          "nodes": 574
+        },
+        "native": {
+          "ms": 4124.887699999999,
+          "serverMs": 4043.003500002669,
+          "bytes": 716184,
+          "graphs": 80,
+          "nodes": 545
+        }
+      },
+      {
+        "native": {
+          "ms": 4297.102900000002,
+          "serverMs": 4166.102099989075,
+          "bytes": 716184,
+          "graphs": 80,
+          "nodes": 545
+        },
+        "n2c": {
+          "ms": 61.172700000002806,
+          "bytes": 721275,
+          "graphs": 79,
+          "nodes": 574
+        }
+      },
+      {
+        "n2c": {
+          "ms": 136.6851999999999,
+          "bytes": 721275,
+          "graphs": 79,
+          "nodes": 574
+        },
+        "native": {
+          "ms": 4340.098900000001,
+          "serverMs": 4197.908099973574,
+          "bytes": 716184,
+          "graphs": 80,
+          "nodes": 545
+        }
+      },
+      {
+        "native": {
+          "ms": 3469.0126999999993,
+          "serverMs": 3342.604900011793,
+          "bytes": 716184,
+          "graphs": 80,
+          "nodes": 545
+        },
+        "n2c": {
+          "ms": 75.93180000000211,
+          "bytes": 721275,
+          "graphs": 79,
+          "nodes": 574
+        }
+      },
+      {
+        "n2c": {
+          "ms": 136.94540000000052,
+          "bytes": 721275,
+          "graphs": 79,
+          "nodes": 574
+        },
+        "native": {
+          "ms": 4385.3423,
+          "serverMs": 4307.819799985737,
+          "bytes": 716184,
+          "graphs": 80,
+          "nodes": 545
+        }
+      }
+    ]
+  },
+  {
+    "asset": "/Game/Characters/Heroes/Mannequin/Animations/ABP_Mannequin_CopyPose",
+    "samples": [
+      {
+        "native": {
+          "ms": 72.06259999999747,
+          "serverMs": 31.60849999403581,
+          "bytes": 2081,
+          "graphs": 2,
+          "nodes": 2
+        },
+        "n2c": {
+          "ms": 28.067399999999907,
+          "bytes": 5385,
+          "graphs": 1,
+          "nodes": 2
+        }
+      },
+      {
+        "n2c": {
+          "ms": 3.069499999997788,
+          "bytes": 5385,
+          "graphs": 1,
+          "nodes": 2
+        },
+        "native": {
+          "ms": 155.40989999999874,
+          "serverMs": 142.06660000490956,
+          "bytes": 2082,
+          "graphs": 2,
+          "nodes": 2
+        }
+      },
+      {
+        "native": {
+          "ms": 140.66229999999996,
+          "serverMs": 122.21639999188483,
+          "bytes": 2082,
+          "graphs": 2,
+          "nodes": 2
+        },
+        "n2c": {
+          "ms": 31.063999999998487,
+          "bytes": 5385,
+          "graphs": 1,
+          "nodes": 2
+        }
+      },
+      {
+        "n2c": {
+          "ms": 3.778599999997823,
+          "bytes": 5385,
+          "graphs": 1,
+          "nodes": 2
+        },
+        "native": {
+          "ms": 153.46869999999763,
+          "serverMs": 134.63610000326298,
+          "bytes": 2082,
+          "graphs": 2,
+          "nodes": 2
+        }
+      },
+      {
+        "native": {
+          "ms": 233.54349999999977,
+          "serverMs": 170.28649998246692,
+          "bytes": 2082,
+          "graphs": 2,
+          "nodes": 2
+        },
+        "n2c": {
+          "ms": 32.78669999999693,
+          "bytes": 5385,
+          "graphs": 1,
+          "nodes": 2
+        }
+      },
+      {
+        "n2c": {
+          "ms": 4.746999999995751,
+          "bytes": 5385,
+          "graphs": 1,
+          "nodes": 2
+        },
+        "native": {
+          "ms": 153.61869999999908,
+          "serverMs": 88.84889999171719,
+          "bytes": 2081,
+          "graphs": 2,
+          "nodes": 2
+        }
+      }
+    ]
+  },
+  {
+    "asset": "/Game/Characters/Heroes/Mannequin/Animations/LinkedLayers/ABP_ItemAnimLayersBase",
+    "samples": [
+      {
+        "native": {
+          "ms": 4270.544799999996,
+          "serverMs": 4191.981899988605,
+          "bytes": 994886,
+          "graphs": 83,
+          "nodes": 670
+        },
+        "n2c": {
+          "ms": 97.1304999999993,
+          "bytes": 1101008,
+          "graphs": 83,
+          "nodes": 676
+        }
+      },
+      {
+        "n2c": {
+          "ms": 88.60200000000623,
+          "bytes": 1101008,
+          "graphs": 83,
+          "nodes": 676
+        },
+        "native": {
+          "ms": 4380.714800000002,
+          "serverMs": 4248.946399980923,
+          "bytes": 994886,
+          "graphs": 83,
+          "nodes": 670
+        }
+      },
+      {
+        "native": {
+          "ms": 4143.446000000004,
+          "serverMs": 4005.2276000205893,
+          "bytes": 994887,
+          "graphs": 83,
+          "nodes": 670
+        },
+        "n2c": {
+          "ms": 135.6160000000018,
+          "bytes": 1101008,
+          "graphs": 83,
+          "nodes": 676
+        }
+      },
+      {
+        "n2c": {
+          "ms": 155.47950000000128,
+          "bytes": 1101008,
+          "graphs": 83,
+          "nodes": 676
+        },
+        "native": {
+          "ms": 4562.5717,
+          "serverMs": 4406.884399999399,
+          "bytes": 994886,
+          "graphs": 83,
+          "nodes": 670
+        }
+      },
+      {
+        "native": {
+          "ms": 3973.4709999999977,
+          "serverMs": 3850.4871999903116,
+          "bytes": 994887,
+          "graphs": 83,
+          "nodes": 670
+        },
+        "n2c": {
+          "ms": 98.33939999999711,
+          "bytes": 1101008,
+          "graphs": 83,
+          "nodes": 676
+        }
+      },
+      {
+        "n2c": {
+          "ms": 171.54919999999402,
+          "bytes": 1101008,
+          "graphs": 83,
+          "nodes": 676
+        },
+        "native": {
+          "ms": 4783.9316000000035,
+          "serverMs": 4630.135799990967,
+          "bytes": 994886,
+          "graphs": 83,
+          "nodes": 670
+        }
+      }
+    ]
+  }
+]

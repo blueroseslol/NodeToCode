@@ -468,6 +468,17 @@ struct FN2CGraph
 {
     GENERATED_BODY()
 
+    /** Animation graphs describe pose/state relationships, not imperative K2 execution. Liveness is not inferred. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code")
+    bool bAnalysisOnly = false;
+
+    /** Full source path disambiguates same-named state/transition graphs. Set for animation analysis graphs. */
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code")
+    FString SourcePath;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code")
+    FString SchemaClass;
+
     /** Name of the graph */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code")
     FString Name;

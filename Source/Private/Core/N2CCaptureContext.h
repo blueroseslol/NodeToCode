@@ -118,7 +118,7 @@ private:
     int32 CurrentDepth = 0;
 
     /** Fills N2CBlueprint.Metadata and CapturedBlueprint from the Blueprint FirstNode belongs to */
-    void CaptureBlueprintMetadata(UK2Node* FirstNode);
+    void CaptureBlueprintMetadata(UEdGraphNode* FirstNode);
 
     /** Captures the queued nested graphs, shallowest first, until the queue is empty */
     void ProcessQueuedGraphs();
@@ -127,7 +127,7 @@ private:
     void BeginGraph(const FString& Name, EN2CGraphType GraphType, const UEdGraph* Source = nullptr);
 
     /** Gives Node and its visible pins their IDs (the first pass over a graph; knots get none). False for a knot or null. */
-    bool AssignIDs(UK2Node* Node);
+    bool AssignIDs(UEdGraphNode* Node);
 
     /** Process a single graph */
     bool ProcessGraph(UEdGraph* Graph, EN2CGraphType GraphType);
@@ -175,7 +175,7 @@ private:
     void AddVariableRelatedTypes(const FEdGraphPinType& Type);
 
     /** Convert a UK2Node to FN2CNodeDefinition (its IDs must have been assigned) */
-    bool ProcessNode(UK2Node* Node, FN2CNodeDefinition& OutNodeDef);
+    bool ProcessNode(UEdGraphNode* Node, FN2CNodeDefinition& OutNodeDef);
 
     /** Determine node type */
     void DetermineNodeType(UK2Node* Node, EN2CNodeType& OutType);
@@ -200,10 +200,10 @@ private:
     void ProcessNodeTypeAndProperties(UK2Node* Node, FN2CNodeDefinition& OutNodeDef);
 
     /** Process all pins on the node */
-    void ProcessNodePins(UK2Node* Node, FN2CNodeDefinition& OutNodeDef, TArray<UEdGraphPin*>& OutExecInputs, TArray<UEdGraphPin*>& OutExecOutputs);
+    void ProcessNodePins(UEdGraphNode* Node, FN2CNodeDefinition& OutNodeDef, TArray<UEdGraphPin*>& OutExecInputs, TArray<UEdGraphPin*>& OutExecOutputs);
 
     /** Process execution and data flows for the node */
-    void ProcessNodeFlows(UK2Node* Node, const TArray<UEdGraphPin*>& ExecInputs, const TArray<UEdGraphPin*>& ExecOutputs);
+    void ProcessNodeFlows(UEdGraphNode* Node, const TArray<UEdGraphPin*>& ExecInputs, const TArray<UEdGraphPin*>& ExecOutputs);
 
     /** A Blueprint-defined struct (UUserDefinedStruct), wherever its asset lives */
     static bool IsBlueprintStruct(const UScriptStruct* Struct);

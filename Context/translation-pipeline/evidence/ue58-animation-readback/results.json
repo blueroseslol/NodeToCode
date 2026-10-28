@@ -1,0 +1,102 @@
+[
+  {
+    "asset": "/Game/Characters/Heroes/B_Hero_Default",
+    "graphs": 6,
+    "nodes": 61,
+    "pathChecks": 0,
+    "settingsChecks": 0,
+    "stateEdges": 0,
+    "medianMs": 13.150099999999995,
+    "timings": [
+      47.970600000000005,
+      13.150099999999995,
+      18.914900000000003,
+      10.543800000000005,
+      17.697999999999993,
+      8.378199999999993
+    ],
+    "bytes": 69809,
+    "beforeGraphs": 6,
+    "beforeNodes": 61
+  },
+  {
+    "asset": "/ShooterCore/Game/B_Hero_ShooterMannequin",
+    "graphs": 10,
+    "nodes": 155,
+    "pathChecks": 0,
+    "settingsChecks": 0,
+    "stateEdges": 0,
+    "medianMs": 22.56880000000001,
+    "timings": [
+      19.78449999999998,
+      15.365799999999979,
+      22.56880000000001,
+      15.065600000000018,
+      31.08699999999999,
+      22.824099999999987
+    ],
+    "bytes": 163619,
+    "beforeGraphs": 10,
+    "beforeNodes": 155
+  },
+  {
+    "asset": "/Game/Characters/Heroes/Mannequin/Animations/ABP_Mannequin_Base",
+    "graphs": 79,
+    "nodes": 574,
+    "pathChecks": 13,
+    "settingsChecks": 94,
+    "stateEdges": 55,
+    "medianMs": 60.163599999999974,
+    "timings": [
+      63.931899999999985,
+      59.80690000000004,
+      96.29670000000004,
+      57.01739999999995,
+      96.17539999999997,
+      60.163599999999974
+    ],
+    "bytes": 721275,
+    "beforeGraphs": 78,
+    "beforeNodes": 529
+  },
+  {
+    "asset": "/Game/Characters/Heroes/Mannequin/Animations/ABP_Mannequin_CopyPose",
+    "graphs": 1,
+    "nodes": 2,
+    "pathChecks": 0,
+    "settingsChecks": 2,
+    "stateEdges": 0,
+    "medianMs": 2.1345000000000027,
+    "timings": [
+      17.896400000000085,
+      2.1345000000000027,
+      10.046100000000024,
+      1.900199999999927,
+      9.976799999999912,
+      1.6129000000000815
+    ],
+    "bytes": 5385,
+    "beforeGraphs": 1,
+    "beforeNodes": 2
+  },
+  {
+    "asset": "/Game/Characters/Heroes/Mannequin/Animations/LinkedLayers/ABP_ItemAnimLayersBase",
+    "graphs": 83,
+    "nodes": 676,
+    "pathChecks": 86,
+    "settingsChecks": 116,
+    "stateEdges": 40,
+    "medianMs": 112.91610000000014,
+    "timings": [
+      125.57499999999993,
+      141.93650000000002,
+      109.94060000000013,
+      105.50919999999996,
+      112.91610000000014,
+      139.1173000000001
+    ],
+    "bytes": 1101008,
+    "beforeGraphs": 79,
+    "beforeNodes": 643
+  }
+]

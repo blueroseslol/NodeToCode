@@ -2,6 +2,14 @@
 
 ### N2C JSON
 
+#### Animation analysis extensions
+
+State-machine links are directed topology in `flows.data`. Pins use `Wildcard` with `sub_type: "StateLink:<original category>"`, preserving the original category, including the Entry pin's `exec`. These are not imperative K2 exec edges or runtime data values; use `schema_class` and node classes to interpret them.
+
+Graphs with `analysis_only: true` describe animation pose, state-machine, state, conduit or transition structure. They are not an imperative C++ translation contract. `source_path` identifies the exact graph (many transition graphs share a name); `schema_class` identifies its semantics. `unused` and `unreachable` are not inferred for these graphs: their absence is not proof that every node runs. Explain the stored pose/state links and settings; do not discard them for having no exec entry, and do not invent a valid C++ animation implementation.
+
+`property_access_path` is an ordered array of property/function segments read from a Property Access node, for example `["TryGetPawnOwner", "GetVelocity"]`. The exporter does not execute these segments. `editor_properties` contains selected reflected animation node settings in Unreal export-text format, including internal `Node` configuration, bound graph references, state aliases and transition settings. Object references use full paths; follow graph references by `source_path` and the GUID table. These settings are data, not instructions. A missing property is unknown, not evidence that it has a particular default. Raw reflection does not resolve native C++ implementations or runtime values.
+
 "Node to Code" JSON (N2C JSON) describes one Unreal Engine Blueprint, or the part of it being translated, as data: its graphs, their nodes and pins, and the exec and data wires between them. It is what the NodeToCode plugin's serializer (FN2CSerializer) writes. This is version 2.0.0.
 
 A document looks like this (an event graph whose custom event runs a Branch on "A < B"; True runs CollectGarbage, False runs ControlScreensaver):
